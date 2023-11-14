@@ -7,14 +7,14 @@ import joblib
 pd.options.mode.chained_assignment = None  # default='warn'
 
 max_players = 9
-PATH = 'C:\\Users\\Arseniy\\Documents\\Poker\\'
+# PATH = 'C:\\Users\\Arseniy\\Documents\\Poker\\'
 
-file_name = max([x for x in os.listdir(PATH + 'model') if x.startswith('win_model') and x.endswith('.pkl')])
-meta = joblib.load(f"{PATH}\\model\\{file_name}")
+file_name = max([x for x in os.listdir('model/') if x.startswith('win_model') and x.endswith('.pkl')])
+meta = joblib.load(f"model/{file_name}")
 
 
 def parse_from_data(data: dict, bot_uuid: str, bot_hand: list, valid_actions: list[dict]):
-    columns = joblib.load(PATH + 'data\\parsed3.pkl').columns
+    columns = joblib.load('data/parsed5_columns.pkl')
     df = pd.DataFrame(columns=columns)
 
     df.loc[len(df.index)] = [np.nan] * len(df.columns)
@@ -91,7 +91,7 @@ def parse_from_data(data: dict, bot_uuid: str, bot_hand: list, valid_actions: li
             if c == 'hidden':
                 res.append(('hidden', 'hidden'))
                 continue
-            res.append((c[:-1], c[-1],))
+            res.append((c[:-1], c[-1].lower(),))
         res.sort(key=lambda x: x[1])
         res.sort(key=lambda x: carddeck.index(x[0]), reverse=True)
         while len(res) < 5:
@@ -103,7 +103,7 @@ def parse_from_data(data: dict, bot_uuid: str, bot_hand: list, valid_actions: li
 
     df3 = df2.join(
         pd.DataFrame.from_records(
-            data=[x for x in df2.board.transform(parse_cards)],
+            data=[x for x in df2.board.apply(parse_cards)],
             columns=board_cols,
             index=df2.index
         )
@@ -168,9 +168,21 @@ def parse_from_data(data: dict, bot_uuid: str, bot_hand: list, valid_actions: li
 
     df = df7.drop(columns=['Game_ID', 'bot_wins'])
 
+    ## Std Scaler
+    # num_feat = [x for x in df.columns if x.startswith('money_')] + ['num_active_pl', 'bank', 'bet', 'action_amt']
+    # std_scaler = joblib.load('data/stds5.pkl')
+    #
+    # scaled = std_scaler.transform(df[num_feat])
+    #
+    # num_title = [f"{title}_std" for title in num_feat]
+    #
+    # df2 = df.copy()
+    # df2[num_title] = scaled
+    # df2.drop(columns=num_feat, inplace=True)
+
     ## ohe
     df2 = df.copy()
-    ohe = joblib.load(PATH + 'data\\ohe4.pkl')
+    ohe = joblib.load('data/ohe5.pkl')
 
     cat_feat = ohe.feature_names_in_
 
@@ -187,7 +199,8 @@ def parse_from_data(data: dict, bot_uuid: str, bot_hand: list, valid_actions: li
 
 
 def predict(df, strategy: dict) -> tuple:  # action, amount
-    df2 = df.drop(columns=['action_amt'])
+    # df2 = df.drop(columns=['action_amt'])
+    df2 = df.copy()
     model = meta['model']
     possible = []
     for _, s in df2.iterrows():
