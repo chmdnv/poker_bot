@@ -1,0 +1,4 @@
+venv*
+poker_venv
+logs/
+__*
