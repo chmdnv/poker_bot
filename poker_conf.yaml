@@ -9,6 +9,14 @@ ai_players:
 - name: Player_2
   path: random_player.py
 - name: Player_3
-  path: learned_player.py
+  path: soft_player.py
 - name: Player_4
+  path: risky_player.py
+- name: Player_5
   path: learned_player.py
+- name: Player_6
+  path: soft_player.py
+- name: Player_7
+  path: learned_player.py
+- name: Player_8
+  path: soft_player.py

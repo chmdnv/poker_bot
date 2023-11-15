@@ -7,7 +7,11 @@ def main():
     scores = [0, 0]
     for _ in range(10):
         config = setup_config(max_round=1000, initial_stack=100, small_blind_amount=5)
-        config.register_player(name="p1", algorithm=BotPlayer())
+        config.register_player(name="p1", algorithm=BotPlayer(strategy={
+            'call': 0.9,  # 0 - call if win is predicted , 1 - always calls
+            'raise': 0.4,  # 0 - never, 1 - always
+            'allin': 0.01  # 0 - never 1 - always
+        }))
         config.register_player(name="p2", algorithm=BotPlayer())
         config.register_player(name="p3", algorithm=FishPlayer())
         config.register_player(name="p4", algorithm=FishPlayer())

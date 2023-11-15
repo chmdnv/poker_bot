@@ -4,16 +4,19 @@ from processing import parse_from_data, predict
 
 
 class BotPlayer(BasePokerPlayer):  # Do not forget to make parent class as "BasePokerPlayer"
-    def __new__(cls, strategy=None):
+    def __new__(cls, *args, **kwargs):
+        instance = super().__new__(cls)
+        return instance
+
+    def __init__(self, strategy=None):
         if not strategy:
             strategy = {
-                'call': 0.8,   # 0 - call if win is predicted , 1 - always calls
-                'raise': 0.5,  # 0 - never, 1 - always
+                'call': 0.4,   # 0 - call if win is predicted , 1 - always calls
+                'raise': 0.3,  # 0 - never, 1 - always
                 'allin': 0.01  # 0 - never 1 - always
             }
-        self = super().__new__(cls)
+        super().__init__()
         self.strategy = strategy
-        return self
 
     def get_attrs(self, round_state):
         for i, d in enumerate(round_state['seats']):
