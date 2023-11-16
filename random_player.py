@@ -11,7 +11,7 @@ class FishPlayer(BasePokerPlayer):  # Do not forget to make parent class as "Bas
             return 'fold', 0
         action = choice(valid_actions)
         if action['action'] == 'raise':
-            amount = randint(action['amount']['min'], action['amount']['max'])
+            amount = randint(action['amount']['min'], min(action['amount']['max'], 100))
         else:
             amount = action["amount"]
         action, amount = action["action"], amount
