@@ -16,7 +16,3 @@ ai_players:
   path: learned_player.py
 - name: Player_6
   path: soft_player.py
-- name: Player_7
-  path: learned_player.py
-- name: Player_8
-  path: soft_player.py
